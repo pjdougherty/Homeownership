@@ -4,8 +4,8 @@ Created on Wed Aug 26 09:13:47 2015
 
 @author: pdougherty
 
-This script was used to create the master CSV file found in this repository.
-If you read the CSV into pandas, only the plotHomeownership(msa) function will be relevant. MSA names passed through should be the first city in the MSA name. For instance, to plot Baltimore-Towson-Columbia, MD MSA homeownership, use msa='Baltimore'.
+This script was used to create the master CSV file found in this repository. As the US Census Bureau updates its Housing Vacancies and Homeownership survey, it may be used to reformat the data for plotting and use.
+If you read the associated CSV into pandas, only the plotHomeownership(msa) function will be relevant.
 
 Data from US Census Bureau's CPS/HVS Housing Vacancies and Homeownership survey and is available for the 75 largest US metros.
 """
@@ -51,22 +51,27 @@ def shortNames(df):
     return df
     
 def plotHomeownerRates(msa):
+    '''
+    params:
+        - msa: list-like, names of principal cities within metro areas
+    '''
     fig, ax=plt.subplots()
-    
-    plt.plot(d[d.MSA==msa].period, d[d.MSA==msa].Rate, label=msa)
+    for m in msa:
+        plt.plot(d[d.MSA==m].period, d[d.MSA==m].Rate, label=m)
     
     labels = ax.get_yticks().tolist()
     labels = [str(l)+'%' for l in labels]
     ax.set_yticklabels(labels)
     
     plt.ylabel('Percent of Residents')
+    plt.legend(loc=0)
     
-    plt.title('Homeownership Rate\n{}'.format(msa))
+    plt.title('Homeownership Rate')
     
     plt.tight_layout()
-    plt.show()
     
     return fig
+
 ''' Not needed for plotting '''
 '''
 df = {}
