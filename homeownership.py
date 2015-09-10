@@ -50,14 +50,23 @@ def shortNames(df):
     
     return df
     
-def plotHomeownerRates(msa):
+def plotHomeownerRates(df, msa, us=True, save=False, filepath=''):
     '''
     params:
+        - df: dataframe of metropolitan regions
         - msa: list-like, names of principal cities within metro areas
+        - us: if us==True, plot US homeownership rate
+        - save: save the plot
+        - filepath: if save is passed, a filepath, name, and extension must be specified
     '''
+
     fig, ax=plt.subplots()
     for m in msa:
-        plt.plot(d[d.MSA==m].period, d[d.MSA==m].Rate, label=m)
+        ax.plot(df[df.MSA==m].period, df[df.MSA==m].Rate, label=m)
+    if us==True:
+    us = pd.read_csv('https://raw.githubusercontent.com/pjdougherty/Homeownership/master/us%20and%20regions_homeownership.csv')
+    us = us[us.Area=='United States']
+    ax.plot(us[us.Year>=2005].dt, us[us.Year>=2005].Rate, label='US', c='#363737', alpha=0.3)
     
     labels = ax.get_yticks().tolist()
     labels = [str(l)+'%' for l in labels]
@@ -68,10 +77,15 @@ def plotHomeownerRates(msa):
     
     plt.title('Homeownership Rate')
     
-    plt.tight_layout()
+    if save==True:
+	if filepath=='':
+            print 'Filepath must be specified with name and extension.'
+        else:
+            plt.savefig(filepath, bbox_inches='tight', dpi=600, alpha=True)
     
     return fig
 
+''' Read in and transform the raw Census Bureau data '''
 ''' Not needed for plotting '''
 '''
 df = {}
@@ -96,3 +110,4 @@ d.Year.value_counts()
 d = shortNames(d)
 d = d.sort('period')
 '''
+
